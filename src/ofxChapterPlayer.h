@@ -91,6 +91,7 @@ public:
 	std::shared_ptr<Chapter> addChapter(const std::string &name, const ChapterSettings &settings);
 	std::shared_ptr<Chapter> getChapter(const std::string &name);
 	void setNext(std::shared_ptr<Chapter> from, const std::string &next);
+	std::string getCurrentChapterName() const;
 	
 	void update();
 	void draw(float x, float y, float w, float h) const;

@@ -222,6 +222,17 @@ void ChapterPlayer::setNext(std::shared_ptr<Chapter> from, const std::string &ne
 	next_chapters_[from] = next;
 }
 
+std::string ChapterPlayer::getCurrentChapterName() const
+{
+	auto result = find_if(begin(chapters_), end(chapters_), [this](const pair<std::string, shared_ptr<Chapter>> &chapter) {
+		return current_ == chapter.second;
+	});
+	if(result == end(chapters_)) {
+		return "";
+	}
+	return result->first;
+}
+
 void ChapterPlayer::update()
 {
 	if(current_) current_->update();
