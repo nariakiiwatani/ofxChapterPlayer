@@ -2,6 +2,7 @@
 
 #include "ofxChapterPlayer.h"
 #include "ofTexture.h"
+#include "ofImage.h"
 
 class TextureViewer : public ofx::chapterplayer::PlayerBase
 {

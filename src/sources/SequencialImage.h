@@ -8,6 +8,7 @@ class SequencialImageViewer : public TextureViewer
 public:
 	void setPreload(bool preload) { preload_ = preload; }
 	bool load(const std::string &directorypath) {
+		images_.clear();
 		ofDirectory dir = ofDirectory(directorypath).getSorted();
 		files_ = dir.getFiles();
 		if(!preload_) {
@@ -27,6 +28,7 @@ public:
 		tex_ = images_.front();
 		return true;
 	}
+	std::size_t size() const { return images_.size(); }
 	void clear() { images_.clear(); }
 	void setFrameRate(float fps) { fps_ = fps; }
 	void update(float current_time) {
