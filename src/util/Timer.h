@@ -32,6 +32,7 @@ public:
 		loop_count_ = 0;
 		duration_ = duration;
 		callback_ = callback;
+		rewind();
 	}
 	void setupLoop(float duration, int loops=-1, Callback finish_callback=[](){return false;}, RapCallback rap_callback=[](int loops, bool is_last){return true;}) {
 		setup(duration, [&,loops,finish_callback,rap_callback]() {

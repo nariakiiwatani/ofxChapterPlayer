@@ -4,7 +4,7 @@
 using namespace std;
 using namespace ofx::chapterplayer;
 
-bool Chapter::load(const std::string &name)
+bool Chapter::load(const std::filesystem::path &name)
 {
 	return player_ ? player_->load(name) : false;
 }
@@ -20,7 +20,7 @@ void Chapter::setDelay(float delay)
 
 void Chapter::setLoop(bool loop)
 {
-	loop_times_ = -1;
+	loop_times_ = loop ? -1 : 1;
 }
 void Chapter::setLoopTimes(int times)
 {
@@ -231,6 +231,16 @@ std::string ChapterPlayer::getCurrentChapterName() const
 		return "";
 	}
 	return result->first;
+}
+
+std::vector<std::string> ChapterPlayer::getAllChapterName() const
+{
+	std::vector<std::string> ret;
+	ret.reserve(chapters_.size());
+	for(auto &&s : chapters_) {
+		ret.push_back(s.first);
+	}
+	return ret;
 }
 
 void ChapterPlayer::update()

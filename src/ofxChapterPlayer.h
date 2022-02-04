@@ -11,24 +11,25 @@ namespace chapterplayer {
 class PlayerBase : public ofBaseDraws
 {
 public:
-	virtual bool load(const std::string &name) { return true; }
+	virtual bool load(const std::filesystem::path &name) { return true; }
 	virtual void update(float current_time){}
 };
 
 class Chapter : public ofBaseUpdates, public ofBaseDraws
 {
 public:
-	bool load(const std::string &name);
+	bool load(const std::filesystem::path &name);
 	
 	void setPlayer(std::shared_ptr<PlayerBase> player) { player_ = player; }
-	template<typename T> std::shared_ptr<T> getPlayer() { return std::static_pointer_cast<T>(player_); }
+	template<typename T> std::shared_ptr<T> getPlayer() { return std::dynamic_pointer_cast<T>(player_); }
 	
-	void update();
-	void draw(float x, float y, float w, float h) const;
+	void update() override;
+	void draw() const { draw(0,0); }
+	void draw(float x, float y, float w, float h) const override;
 	using ofBaseDraws::draw;
 	
-	float getWidth() const;
-	float getHeight() const;
+	float getWidth() const override;
+	float getHeight() const override;
 	
 	void play();
 	void stop();
@@ -36,6 +37,8 @@ public:
 	void setPaused(bool paused);
 	bool isPaused() const;
 	bool isPlaying() const;
+	float getDuration() const { return duration_; }
+	float getPosition() const { return timer_.getPosition(); }
 	
 	void setSection(float start_time, float duration);
 	void setDelay(float delay);
@@ -59,7 +62,6 @@ protected:
 	std::shared_ptr<PlayerBase> player_;
 	Timer timer_;
 	float start_time_;
-	float current_time_;
 	float duration_;
 	int loop_times_=1;
 	float delay_=0;
@@ -92,13 +94,15 @@ public:
 	std::shared_ptr<Chapter> getChapter(const std::string &name);
 	void setNext(std::shared_ptr<Chapter> from, const std::string &next);
 	std::string getCurrentChapterName() const;
+	std::vector<std::string> getAllChapterName() const;
 	
 	void update();
-	void draw(float x, float y, float w, float h) const;
+	virtual void draw() const { draw(0,0); }
+	virtual void draw(float x, float y, float w, float h) const override;
 	using ofBaseDraws::draw;
 	
-	float getWidth() const;
-	float getHeight() const;
+	float getWidth() const override;
+	float getHeight() const override;
 	
 	void play(const std::string &name);
 	void stop();
