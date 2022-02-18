@@ -108,6 +108,7 @@ public:
 	
 	void play(const std::string &name);
 	void stop();
+	void setPaused(bool paused);
 	void next();
 protected:
 	std::map<std::string, std::shared_ptr<Chapter>> chapters_;

@@ -273,6 +273,11 @@ void ChapterPlayer::stop()
 {
 	if(current_) current_->stop();
 }
+void ChapterPlayer::setPaused(bool paused)
+{
+	if(current_) current_->setPaused(paused);
+}
+
 void ChapterPlayer::next()
 {
 	if(current_) current_->finish();
