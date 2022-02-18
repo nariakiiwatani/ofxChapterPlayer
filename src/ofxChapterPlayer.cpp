@@ -150,6 +150,8 @@ void Chapter::appendSound(std::shared_ptr<ofSoundPlayer> player, const SoundSett
 	sound_.emplace_back(Sound{});
 	auto &sound = sound_.back();
 	sound.player = player;
+	player->setPan(settings.pan);
+	player->setVolume(settings.volume);
 	sound.timer.setup(settings.delay, [sound]() {
 		sound.player->play();
 		return false;

@@ -51,6 +51,8 @@ public:
 	struct SoundSettings {
 		SoundSettings(){}
 		float delay=0;
+		float volume=1;
+		float pan=0.5f;
 		bool stop_on_finish=false;
 		bool play_on_every_rap=true;
 		bool stop_on_every_rap=false;
