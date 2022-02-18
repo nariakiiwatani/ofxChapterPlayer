@@ -161,7 +161,7 @@ void Chapter::appendSound(std::shared_ptr<ofSoundPlayer> player, const SoundSett
 	sound.stop_on_every_rap = settings.stop_on_every_rap;
 }
 
-std::shared_ptr<ofSoundPlayer> Chapter::appendSound(const std::string &filepath, const SoundSettings &settings)
+std::shared_ptr<ofSoundPlayer> Chapter::appendSound(const std::filesystem::path &filepath, const SoundSettings &settings)
 {
 	auto sound = make_shared<ofSoundPlayer>();
 	sound->load(filepath);

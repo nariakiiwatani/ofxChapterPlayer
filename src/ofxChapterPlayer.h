@@ -58,7 +58,7 @@ public:
 		bool stop_on_every_rap=false;
 	};
 	void appendSound(std::shared_ptr<ofSoundPlayer> player, const SoundSettings &settings=SoundSettings());
-	std::shared_ptr<ofSoundPlayer> appendSound(const std::string &filepath, const SoundSettings &settings=SoundSettings());
+	std::shared_ptr<ofSoundPlayer> appendSound(const std::filesystem::path &filepath, const SoundSettings &settings=SoundSettings());
 	
 protected:
 	std::shared_ptr<PlayerBase> player_;
