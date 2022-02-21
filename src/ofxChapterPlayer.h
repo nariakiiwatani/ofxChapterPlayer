@@ -52,6 +52,7 @@ public:
 		SoundSettings(){}
 		float delay=0;
 		float volume=1;
+		float fadein=0, fadeout=0;
 		float pan=0.5f;
 		bool stop_on_finish=false;
 		bool play_on_every_rap=true;
@@ -73,11 +74,23 @@ protected:
 	std::function<bool(bool)> finish_callback_=[](bool){return false;};
 	
 	struct Sound {
+		~Sound();
 		std::shared_ptr<ofSoundPlayer> player;
 		Timer timer;
+		float volume=1;
+		float fadein=0, fadeout=0;
 		bool stop_on_finish;
 		bool stop_on_every_rap;
 		bool play_on_every_rap;
+		void play();
+		void stop();
+		void updateFade(ofEventArgs&);
+	private:
+		void addListener();
+		void removeListener();
+		bool fade_active=false;
+		float fade_value=1;
+		float fade_speed=0;
 	};
 	std::vector<Sound> sound_;
 };
