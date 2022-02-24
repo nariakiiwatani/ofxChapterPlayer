@@ -1,5 +1,7 @@
 #include "ofxChapterPlayer.h"
 #include "ofLog.h"
+#include "ofAppRunner.h"
+#include "ofMath.h"
 
 using namespace std;
 using namespace ofx::chapterplayer;
@@ -46,7 +48,7 @@ void Chapter::play()
 				for(auto &&s : sound_) {
 					s.timer.disable();
 					if(s.stop_on_finish) {
-						s.player->stop();
+						s.stop();
 					}
 				}
 
@@ -63,7 +65,7 @@ void Chapter::play()
 			[this](int times, bool last) {
 				for(auto &&s : sound_) {
 					if(s.stop_on_every_rap) {
-						s.player->stop();
+						s.stop();
 						s.timer.disable();
 					}
 				}
@@ -103,7 +105,7 @@ void Chapter::stop()
 	for(auto &&s : sound_) {
 		s.timer.disable();
 		if(s.stop_on_finish) {
-			s.player->stop();
+			s.stop();
 		}
 	}
 }
@@ -151,11 +153,14 @@ void Chapter::appendSound(std::shared_ptr<ofSoundPlayer> player, const SoundSett
 	auto &sound = sound_.back();
 	sound.player = player;
 	player->setPan(settings.pan);
-	player->setVolume(settings.volume);
-	sound.timer.setup(settings.delay, [sound]() {
-		sound.player->play();
+	player->setVolume(0);
+	sound.timer.setup(settings.delay, [&sound]() {
+		sound.play();
 		return false;
 	});
+	sound.volume = settings.volume;
+	sound.fadein = settings.fadein;
+	sound.fadeout = settings.fadeout;
 	sound.stop_on_finish = settings.stop_on_finish;
 	sound.play_on_every_rap = settings.play_on_every_rap;
 	sound.stop_on_every_rap = settings.stop_on_every_rap;
@@ -167,6 +172,64 @@ std::shared_ptr<ofSoundPlayer> Chapter::appendSound(const std::filesystem::path 
 	sound->load(filepath);
 	appendSound(sound, settings);
 	return sound;
+}
+
+Chapter::Sound::~Sound()
+{
+	removeListener();
+}
+void Chapter::Sound::addListener()
+{
+	if(!fade_active) {
+		ofAddListener(ofEvents().update, this, &Sound::updateFade);
+		fade_active = true;
+	}
+}
+void Chapter::Sound::removeListener()
+{
+	if(fade_active) {
+		ofRemoveListener(ofEvents().update, this, &Sound::updateFade);
+		fade_active = false;
+	}
+}
+void Chapter::Sound::play()
+{
+	float fade_time = fadein;
+	player->play();
+	if(fade_time == 0) {
+		removeListener();
+		player->setVolume(volume);
+	}
+	else {
+		addListener();
+		fade_value = player->getVolume();
+		fade_speed = (volume - fade_value)/fade_time;
+	}
+}
+void Chapter::Sound::stop()
+{
+	float fade_time = fadeout;
+	if(fade_time == 0) {
+		removeListener();
+		player->stop();
+	}
+	else {
+		addListener();
+		fade_value = player->getVolume();
+		fade_speed = -fade_value/fade_time;
+	}
+}
+void Chapter::Sound::updateFade(ofEventArgs&)
+{
+	fade_value += fade_speed * ofGetLastFrameTime();
+	if(!ofInRange(fade_value, 0, volume)) {
+		removeListener();
+		if(fade_value <= 0) {
+			player->stop();
+		}
+	}
+	fade_value = ofClamp(fade_value, 0, volume);
+	player->setVolume(fade_value);
 }
 
 // =========
