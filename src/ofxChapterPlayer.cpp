@@ -184,7 +184,12 @@ std::shared_ptr<Chapter> ChapterPlayer::addChapter(const std::string &name)
 	auto ret = make_shared<Chapter>();
 	auto result = chapters_.insert(make_pair(name, ret));
 	if(!result.second) {
+#ifdef TARGET_WIN32
+		ofLogWarning(__FUNCSIG__) << "Chapter " << name << " already exists. Returning old one.";
+#else
 		ofLogWarning(__PRETTY_FUNCTION__) << "Chapter " << name << " already exists. Returning old one.";
+#endif
+
 		return result.first->second;
 	}
 	ofAddListener(ret->onFinish, this, &ChapterPlayer::onChapterEnd);
@@ -214,7 +219,11 @@ std::shared_ptr<Chapter> ChapterPlayer::getChapter(const std::string &name)
 {
 	auto result = chapters_.find(name);
 	if(result == end(chapters_)) {
+#ifdef TARGET_WIN32
+		ofLogWarning(__FUNCSIG__) << "Chapter " << name << " not found.";
+#else
 		ofLogWarning(__PRETTY_FUNCTION__) << "Chapter " << name << " not found.";
+#endif
 		return nullptr;
 	}
 	return result->second;
