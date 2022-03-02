@@ -153,12 +153,14 @@ void Chapter::appendSound(std::shared_ptr<ofSoundPlayer> player, const SoundSett
 	auto &sound = sound_.back();
 	sound.player = player;
 	player->setPan(settings.pan);
+	player->setMultiPlay(settings.multiplay);
 	player->setVolume(0);
 	sound.timer.setup(settings.delay, [&sound]() {
 		sound.play();
 		return false;
 	});
 	sound.volume = settings.volume;
+	sound.start_time = settings.start_time;
 	sound.fadein = settings.fadein;
 	sound.fadeout = settings.fadeout;
 	sound.stop_on_finish = settings.stop_on_finish;
@@ -196,6 +198,7 @@ void Chapter::Sound::play()
 {
 	float fade_time = fadein;
 	player->play();
+	player->setPositionMS(start_time*1000);
 	if(fade_time == 0) {
 		removeListener();
 		player->setVolume(volume);

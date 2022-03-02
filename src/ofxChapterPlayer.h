@@ -53,7 +53,9 @@ public:
 		float delay=0;
 		float volume=1;
 		float fadein=0, fadeout=0;
+		float start_time=0;
 		float pan=0.5f;
+		bool multiplay=false;
 		bool stop_on_finish=false;
 		bool play_on_every_rap=true;
 		bool stop_on_every_rap=false;
@@ -79,6 +81,7 @@ protected:
 		Timer timer;
 		float volume=1;
 		float fadein=0, fadeout=0;
+		float start_time=0;
 		bool stop_on_finish;
 		bool stop_on_every_rap;
 		bool play_on_every_rap;
